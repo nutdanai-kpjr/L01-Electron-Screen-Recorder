@@ -1,5 +1,12 @@
-const { app, BrowserWindow, ipcMain, desktopCapturer } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  desktopCapturer,
+  globalShortcut,
+} = require("electron");
 const remoteMain = require("@electron/remote/main");
+
 const path = require("path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -9,6 +16,9 @@ if (require("electron-squirrel-startup")) {
 }
 
 const createWindow = () => {
+  globalShortcut.register("F9", () => {
+    console.log("Electron loves global shortcuts!");
+  });
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -25,6 +35,7 @@ const createWindow = () => {
   );
   remoteMain.initialize();
   remoteMain.enable(mainWindow.webContents);
+
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
