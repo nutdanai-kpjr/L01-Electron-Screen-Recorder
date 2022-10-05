@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain, desktopCapturer } = require("electron");
+const remoteMain = require("@electron/remote/main");
 const path = require("path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -15,9 +16,15 @@ const createWindow = () => {
     webPreferences: {
       // preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
     },
   });
-
+  ipcMain.handle("DESKTOP_CAPTURER_GET_SOURCES", (event, opts) =>
+    desktopCapturer.getSources(opts)
+  );
+  remoteMain.initialize();
+  remoteMain.enable(mainWindow.webContents);
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 

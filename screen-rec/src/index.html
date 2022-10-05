@@ -4,13 +4,16 @@
     <meta charset="UTF-8" />
     <title>Simple Screen Recorder!</title>
     <link rel="stylesheet" href="index.css" />
+    <script defer src="renderer.js"></script>
   </head>
   <body>
     <h1> 🎤 Screen Recorder!</h1>
-    <!-- <video></video> -->
-    <button> Choose window source</button>
-    <button>Start</button>
-    <button>Stop</button>
+    <video></video>
+    <div>
+      <button id="select-window-btn">👉 Select Window</button>
+      <button id="start-btn">🟢 Start</button>
+      <button id="stop-btn">🔴 Stop</button>
+    </div>
 
   </body>
 </html>
