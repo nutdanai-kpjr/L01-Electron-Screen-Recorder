@@ -1,5 +1,5 @@
 const { writeFile } = require("fs");
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const desktopCapturer = {
   getSources: (opts) =>
     ipcRenderer.invoke("DESKTOP_CAPTURER_GET_SOURCES", opts),
@@ -49,7 +49,7 @@ const handleStopPreview = async (e) => {
     buttonLabel: "Save video",
     defaultPath: `vid-${Date.now()}.webm`,
   });
-  writeFile(filePath, buffer, () => {});
+  writeFile(filePath, buffer, () => showRecordingSaved(filePath));
 };
 // after we select video , we will display it in preview
 const selectWindow = async (window) => {
@@ -87,6 +87,7 @@ const start = () => {
   vidRecorder.start();
   startBtn.innerText = "🟡 Recording";
   isRecording = true;
+  showRecordingStartNotification(selectWindowBtn.innerText);
 };
 const stop = () => {
   if (!vidRecorder) return;
@@ -116,3 +117,14 @@ const handleKeyPress = (e) => {
   }
 };
 window.addEventListener("keyup", handleKeyPress, true);
+
+const showRecordingStartNotification = (name) => {
+  new Notification("Recording Start", { body: "on window: " + name });
+};
+const showRecordingSaved = (filePath) => {
+  new Notification("Record Saved!", {
+    body: "Click to open directory",
+  }).onclick = (e) => {
+    shell.showItemInFolder(filePath);
+  };
+};
