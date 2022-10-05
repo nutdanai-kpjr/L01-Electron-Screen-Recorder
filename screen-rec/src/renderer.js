@@ -23,8 +23,8 @@ const getWindows = async () => {
   const windowSelectionMenu = Menu.buildFromTemplate(
     inputWindows.map((window) => {
       return {
-        labels: window.name,
-        clikc: () => selectWindow(window),
+        label: window.name,
+        click: () => selectWindow(window),
       };
     })
   );
@@ -44,21 +44,21 @@ const handleStopPreview = async (e) => {
     type: "video/webm; codecs=vp9",
   });
   const buffer = Buffer.from(await vidBlob.arrayBuffer());
-  await dialog.showSaveDialog({
+  const { filePath } = await dialog.showSaveDialog({
     buttonLabel: "Save video",
     defaultPath: `vid-${Date.now()}.webm`,
   });
-  writeFile(filePath, buffer);
+  writeFile(filePath, buffer, () => console.log("video saved successfully!"));
 };
 // after we select video , we will display it in preview
 const selectWindow = async (window) => {
-  selectWindowBtn.innerText = window.name;
+  selectWindowBtn.innerText = "🎤 " + window.name;
   const constraints = {
     audio: false,
     video: {
       mandatory: {
         chromeMediaSource: "desktop",
-        chromeMediaSourceId: source.id,
+        chromeMediaSourceId: window.id,
       },
     },
   };
