@@ -20,3 +20,7 @@ video {
 button {
   margin: 10px;
 }
+
+#speaker {
+  color: red;
+}

@@ -11,6 +11,7 @@ const selectWindowBtn = document.getElementById("select-window-btn");
 const vidHTMLelement = document.querySelector("video");
 const startBtn = document.getElementById("start-btn");
 const stopBtn = document.getElementById("stop-btn");
+const speakerText = document.getElementById("speaker");
 
 ///
 
@@ -48,7 +49,7 @@ const handleStopPreview = async (e) => {
     buttonLabel: "Save video",
     defaultPath: `vid-${Date.now()}.webm`,
   });
-  writeFile(filePath, buffer, () => console.log("video saved successfully!"));
+  writeFile(filePath, buffer, () => {});
 };
 // after we select video , we will display it in preview
 const selectWindow = async (window) => {
@@ -63,7 +64,7 @@ const selectWindow = async (window) => {
     },
   };
   const vidStreams = await navigator.mediaDevices.getUserMedia(constraints);
-
+  speakerText.innerText = "";
   vidHTMLelement.srcObject = vidStreams;
   vidHTMLelement.play();
 
@@ -75,14 +76,43 @@ const selectWindow = async (window) => {
   vidRecorder.onstop = handleStopPreview;
 };
 
+let isRecording = false;
 // record and save vid file
-
-startBtn.onclick = (e) => {
+const start = () => {
+  if (!vidRecorder) {
+    speakerText.innerText = "Please select a window first!";
+    return;
+  }
+  speakerText.innerText = "";
   vidRecorder.start();
   startBtn.innerText = "🟡 Recording";
+  isRecording = true;
+};
+const stop = () => {
+  if (!vidRecorder) return;
+  vidRecorder.stop();
+  startBtn.innerText = "🟢 Start";
+  isRecording = false;
+};
+startBtn.onclick = (e) => {
+  start();
 };
 
 stopBtn.onclick = (e) => {
-  vidRecorder.stop();
-  startBtn.innerText = "🟢 Start";
+  stop();
 };
+
+//  shortcut
+// F9 for recording
+
+const handleKeyPress = (e) => {
+  if (e.key !== "F9") return;
+  // You can put code here to handle the keypress.
+  // document.getElementById("last-keypress").innerText = e.key;
+  if (isRecording) {
+    stop();
+  } else {
+    start();
+  }
+};
+window.addEventListener("keyup", handleKeyPress, true);

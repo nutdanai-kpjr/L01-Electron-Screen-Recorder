@@ -1,10 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  desktopCapturer,
-  globalShortcut,
-} = require("electron");
+const { app, BrowserWindow, ipcMain, desktopCapturer } = require("electron");
 const remoteMain = require("@electron/remote/main");
 
 const path = require("path");
@@ -16,9 +10,6 @@ if (require("electron-squirrel-startup")) {
 }
 
 const createWindow = () => {
-  globalShortcut.register("F9", () => {
-    console.log("Electron loves global shortcuts!");
-  });
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
