@@ -4,6 +4,9 @@ const desktopCapturer = {
   getSources: (opts) =>
     ipcRenderer.invoke("DESKTOP_CAPTURER_GET_SOURCES", opts),
 };
+const dock = {
+  setBadge: (isRecording) => ipcRenderer.invoke("SET_DAVIN_BADGE", isRecording),
+};
 const remote = require("@electron/remote");
 const { dialog, Menu } = remote;
 
@@ -49,7 +52,8 @@ const handleStopPreview = async (e) => {
     buttonLabel: "Save video",
     defaultPath: `vid-${Date.now()}.webm`,
   });
-  writeFile(filePath, buffer, () => showRecordingSaved(filePath));
+
+  if (filePath) writeFile(filePath, buffer, () => showRecordingSaved(filePath));
 };
 // after we select video , we will display it in preview
 const selectWindow = async (window) => {
@@ -87,13 +91,16 @@ const start = () => {
   vidRecorder.start();
   startBtn.innerText = "🟡 Recording";
   isRecording = true;
+  dock.setBadge(isRecording);
   showRecordingStartNotification(selectWindowBtn.innerText);
 };
 const stop = () => {
   if (!vidRecorder) return;
   vidRecorder.stop();
   startBtn.innerText = "🟢 Start";
+
   isRecording = false;
+  dock.setBadge(isRecording);
 };
 startBtn.onclick = (e) => {
   start();

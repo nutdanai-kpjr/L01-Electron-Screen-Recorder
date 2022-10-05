@@ -24,6 +24,13 @@ const createWindow = () => {
   ipcMain.handle("DESKTOP_CAPTURER_GET_SOURCES", (event, opts) =>
     desktopCapturer.getSources(opts)
   );
+  ipcMain.handle("SET_DAVIN_BADGE", (e, isRecording) => {
+    // if (process.platform !== "darwin") {
+    //   app.quit();
+    // }
+    const badge = isRecording ? "🟡" : "";
+    app.dock.setBadge(`${badge}`);
+  });
   remoteMain.initialize();
   remoteMain.enable(mainWindow.webContents);
 
