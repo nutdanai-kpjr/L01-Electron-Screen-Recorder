@@ -2,7 +2,7 @@
   "name": "screen-rec",
   "productName": "🎤 Screen Recorder",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Mimimal screen recorder to demonstrate the power of electron",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
