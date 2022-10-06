@@ -5,7 +5,6 @@ const {
   dialog,
   Menu,
   webContents,
-  BrowserWindow,
   shell,
 } = require("electron");
 
@@ -53,15 +52,6 @@ const initializeIPCMAIN = () => {
     );
     windowSelectionMenu.popup();
   });
-  // display them in menu
-  //   const windowSelectionMenu = Menu.buildFromTemplate(
-  //     inputWindows.map((window) => {
-  //       return {
-  //         label: window.name,
-  //         //   click: () => onSelectWindow(window),
-  //       };
-  //     })
-  //   );
 
   ipcMain.handle("SHOW_ITEM_IN_FOLDERS", async (e, filePath) => {
     shell.showItemInFolder(filePath);
