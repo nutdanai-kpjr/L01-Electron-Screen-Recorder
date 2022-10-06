@@ -13,14 +13,11 @@ const { writeFile } = require("fs");
 
 const initializeIPCMAIN = () => {
   ipcMain.handle("SAVE_FILE", async (e, buffer) => {
-    const { filePath } = await dialog.showSaveDialog(
-      BrowserWindow.fromId(e.sender.id),
-      {
-        title: "HELLO SAVE",
-        buttonLabel: "Save video",
-        defaultPath: `vid-${Date.now()}.webm`,
-      }
-    );
+    const { filePath } = await dialog.showSaveDialog({
+      title: "HELLO SAVE",
+      buttonLabel: "Save video",
+      defaultPath: `vid-${Date.now()}.webm`,
+    });
 
     if (filePath) writeFile(filePath, buffer, () => {});
     return filePath;
