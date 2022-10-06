@@ -3,26 +3,24 @@ const vidHTMLelement = document.querySelector("video");
 const startBtn = document.getElementById("start-btn");
 const stopBtn = document.getElementById("stop-btn");
 const speakerText = document.getElementById("speaker");
+const recordedChunks = []; // store video data
+let vidRecorder; // video controller.
+let isRecording = false;
 
-///
+/// USER INTERACTION
+// 1. Select Window
+// 2. Start Recording
+// 3. Stop Recording
 
-let vidRecorder;
-const recordedChunks = [];
-// use navigator.mediaDevices.getUserMedia
-const handlePreviewAvaliable = (e) => {
-  recordedChunks.push(e.data);
+// 1.1 Get avaliable windows.
+const getWindows = async () => {
+  await window.api.getWindows();
 };
+selectWindowBtn.onclick = getWindows;
 
-const handleStopPreview = async (e) => {
-  const vidBlob = new Blob(recordedChunks, {
-    type: "video/webm; codecs=vp9",
-  });
-  const buffer = Buffer.from(await vidBlob.arrayBuffer());
-  const filePath = window.api.saveFile(buffer);
-  if (filePath) showRecordingSaved(filePath);
-};
-// after we select video , we will display it in preview
-const selectWindow = async (windowId, windowName) => {
+// 1.2 Define Select Window function to display video preview
+const onSelectWindow = async (windowId, windowName) => {
+  // use navigator.mediaDevices.getUserMedia
   const constraints = {
     audio: false,
     video: {
@@ -40,17 +38,26 @@ const selectWindow = async (windowId, windowName) => {
   speakerText.innerText = "";
   vidHTMLelement.srcObject = vidStreams;
   vidHTMLelement.play();
-  // Then set condition if video is avaialble, display it
-  vidRecorder.ondataavailable = handlePreviewAvaliable;
-  vidRecorder.onstop = handleStopPreview;
-};
 
+  vidRecorder.ondataavailable = hanldeOnVideoDataAvaliable; // Add video data to recordedChunks
+  vidRecorder.onstop = handleStopRecord;
+};
+// Dropdown is managed by main.js , so we need set the onSelect behavior on preload api to connect this to main.
 window.api.onSelectWindow((e, windowId, windowName) => {
-  selectWindow(windowId, windowName);
+  onSelectWindow(windowId, windowName);
 });
 
-let isRecording = false;
-// record and save vid file
+// Store video data
+const hanldeOnVideoDataAvaliable = (e) => {
+  recordedChunks.push(e.data);
+};
+// Save video file
+const handleStopRecord = async (e) => {
+  filePath = await window.api.onStopRecord(recordedChunks);
+  if (filePath) showRecordingSaved(filePath);
+};
+
+//  2. Start Recording
 const start = () => {
   if (!vidRecorder) {
     speakerText.innerText = "Please select a window first!";
@@ -63,27 +70,23 @@ const start = () => {
   window.api.setStatus(isRecording);
   showRecordingStartNotification(selectWindowBtn.innerText);
 };
-const stop = () => {
-  if (!vidRecorder) return;
-  vidRecorder.stop();
-  startBtn.innerText = "🟢 Start";
-
-  isRecording = false;
-  window.api.setStatus(isRecording);
-};
 startBtn.onclick = (e) => {
   start();
 };
 
+// 3. Stop Recording
+const stop = () => {
+  if (!vidRecorder) return;
+  vidRecorder.stop();
+  startBtn.innerText = "🟢 Start";
+  isRecording = false;
+  window.api.setStatus(isRecording);
+};
 stopBtn.onclick = (e) => {
   stop();
 };
 
-const getWindows = async () => {
-  await window.api.getWindows();
-};
-selectWindowBtn.onclick = getWindows;
-//  shortcut
+// Shortcut
 // F9 for recording
 
 const handleKeyPress = (e) => {
@@ -98,6 +101,7 @@ const handleKeyPress = (e) => {
 };
 window.addEventListener("keyup", handleKeyPress, true);
 
+// Notifications
 const showRecordingStartNotification = (name) => {
   new Notification("Recording Start", { body: "on window: " + name });
 };

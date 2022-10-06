@@ -5,17 +5,22 @@ const {
   dialog,
   Menu,
   webContents,
+  BrowserWindow,
   shell,
 } = require("electron");
 
 const { writeFile } = require("fs");
 
-const intializeIPCMAIN = () => {
+const initializeIPCMAIN = () => {
   ipcMain.handle("SAVE_FILE", async (e, buffer) => {
-    const { filePath } = await dialog.showSaveDialog({
-      buttonLabel: "Save video",
-      defaulxtPath: `vid-${Date.now()}.webm`,
-    });
+    const { filePath } = await dialog.showSaveDialog(
+      BrowserWindow.fromId(e.sender.id),
+      {
+        title: "HELLO SAVE",
+        buttonLabel: "Save video",
+        defaultPath: `vid-${Date.now()}.webm`,
+      }
+    );
 
     if (filePath) writeFile(filePath, buffer, () => {});
     return filePath;
@@ -66,4 +71,4 @@ const intializeIPCMAIN = () => {
   });
 };
 
-module.exports = intializeIPCMAIN;
+module.exports = initializeIPCMAIN;
