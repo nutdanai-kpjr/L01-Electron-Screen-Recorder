@@ -1,7 +1,7 @@
-const { app, BrowserWindow, ipcMain, desktopCapturer } = require("electron");
-const remoteMain = require("@electron/remote/main");
+const { app, BrowserWindow } = require("electron");
 
 const path = require("path");
+const intializeIPCMAIN = require("./ipcmain_handler");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require
@@ -15,28 +15,13 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      // preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
-      contextIsolation: false,
-      enableRemoteModule: true,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
-  ipcMain.handle("DESKTOP_CAPTURER_GET_SOURCES", (event, opts) =>
-    desktopCapturer.getSources(opts)
-  );
-  ipcMain.handle("SET_DAVIN_BADGE", (e, isRecording) => {
-    // if (process.platform !== "darwin") {
-    //   app.quit();
-    // }
-    const badge = isRecording ? "🟡" : "";
-    app.dock.setBadge(`${badge}`);
-  });
-  remoteMain.initialize();
-  remoteMain.enable(mainWindow.webContents);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
-
+  intializeIPCMAIN();
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
