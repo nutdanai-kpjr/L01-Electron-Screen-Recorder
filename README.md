@@ -7,7 +7,7 @@ I'm highly recommened this project as a starter for beginner, because you will l
 
 In addition to the orginal version, to play with more electron apis, I also introduced notificaiton, shortcut intregration, macOS Dock configuration, as well as windowOS taskbar customization, these are the features in which I learned from [Examples in Electron docs](https://www.electronjs.org/docs/latest/tutorial/examples) (I'm highly recommend you to explore them!)
 
-Lastly, due to the security changes in Electron,  they don't recommended us to give direct access to node api to renderers (nodeIntregration:true) given that the renderes source is remote-content. Due to this reason, I migrated from using node api directly in renderer.js to use them via IPC instead. Although I believed that my render is trusted source and enable nodeIntregration wouldn't do any harm here, I think it's great to learn the concept of [IPC](https://www.electronjs.org/docs/latest/tutorial/ipc) now for the sake of preparation for the real world project.
+Lastly, due to the security changes in Electron,  they don't recommended us to give direct access to node api to renderers (nodeIntregration:true) given that the renderers source is remote-content. Due to this reason, I migrated from using node api directly in renderer.js to use them via IPC instead. Although I believed that my renderer is trusted source and enable nodeIntregration wouldn't do any harm here, I think it's great to learn the concept of [IPC](https://www.electronjs.org/docs/latest/tutorial/ipc) now for the sake of preparation for the real world project.
 
 ![showcase](https://user-images.githubusercontent.com/54262971/194339634-792e3744-489b-439c-ba7e-944f31916ba2.gif)
 
